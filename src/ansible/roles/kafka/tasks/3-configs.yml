@@ -1,0 +1,31 @@
+- name: Disable RAM Swap
+  become: true
+  command: sysctl vm.swappiness=1 && echo 'vm.swappiness=1' | tee --append /etc/sysctl.conf
+
+- name: Insert/Update /etc/hosts
+  blockinfile:
+    backup: yes
+    block: "{{ lookup('file', '../files/hosts') }}"
+    dest: /etc/hosts
+
+- name: Copy Kafka Binary
+  copy:
+    src: ../files/kafka_2.12-2.3.1.tgz
+    dest: /opt/kafka_2.12-2.3.1.tgz
+    owner: "{{ansible_user}}"
+    group: "{{ansible_user}}"
+    mode: "0644"
+
+- name: Extract kafka tgz into /opt/kafka
+  unarchive:
+    src: /opt/kafka_2.12-2.3.1.tgz
+    dest: /opt
+    remote_src: true
+
+- name: Remove kafka directory if exists
+  file:
+    path: /opt/kafka
+    state: absent
+
+- name: Change kafka folder name
+  command: mv /opt/kafka_2.12-2.3.1 /opt/kafka

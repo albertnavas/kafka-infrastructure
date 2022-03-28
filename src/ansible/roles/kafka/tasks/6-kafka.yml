@@ -1,0 +1,33 @@
+- name: Add file limits configs - allow to open 100,000 file descriptors
+  blockinfile:
+    backup: yes
+    block: "{{ lookup('file', '../files/kafka/limits.conf') }}"
+    dest: /etc/security/limits.conf
+
+- name: Copy Kafka properties
+  copy:
+    src: ../files/kafka/server.properties
+    dest: /opt/kafka/config/server.properties
+    owner: "{{ansible_user}}"
+    group: "{{ansible_user}}"
+    mode: "0644"
+
+- name: Add broker specific configs
+  blockinfile:
+    backup: yes
+    block: |
+      broker.id={{brokerId}}
+      advertised.listeners=PLAINTEXT://kafka{{brokerId}}.YOUR_DOMAIN.com:9092
+    dest: /opt/kafka/config/server.properties
+
+- name: Install Kafka boot script
+  copy:
+    src: ../files/kafka/kafka
+    dest: /etc/init.d/kafka
+    owner: "{{ansible_user}}"
+    group: "{{ansible_user}}"
+    mode: "0755"
+
+- name: Update services
+  become: true
+  command: update-rc.d zookeeper defaults

@@ -1,0 +1,10 @@
+---
+- hosts: "*"
+  become: yes
+  pre_tasks:
+    - name: Update apt repository
+      apt:
+        force_apt_get: true
+        update_cache: yes
+  roles:
+    - kafka

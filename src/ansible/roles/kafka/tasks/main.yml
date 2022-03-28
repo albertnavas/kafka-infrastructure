@@ -1,0 +1,8 @@
+---
+- include: 1-packages.yml
+- include: 2-volumes.yml
+- include: 3-configs.yml
+- include: 4-monitoring.yml
+- include: 5-zookeeper.yml
+- include: 6-kafka.yml
+- include: 7-start.yml

@@ -1,0 +1,26 @@
+- name: Install packages
+  apt:
+    force_apt_get: true
+    name:
+      [
+        "wget",
+        "ca-certificates",
+        "zip",
+        "net-tools",
+        "vim",
+        "nano",
+        "tar",
+        "netcat",
+        "xfsprogs",
+      ]
+    state: present
+  tags:
+    - packages
+
+- name: Install Java 11 JDK
+  apt:
+    force_apt_get: true
+    name: ["default-jre"]
+    state: present
+  tags:
+    - packages

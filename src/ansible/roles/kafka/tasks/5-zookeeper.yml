@@ -1,0 +1,32 @@
+- name: Install Zookeeper boot script
+  copy:
+    src: ../files/zookeeper/zookeeper
+    dest: /etc/init.d/zookeeper
+    owner: "{{ansible_user}}"
+    group: "{{ansible_user}}"
+    mode: "0755"
+
+- name: Update services
+  become: true
+  command: update-rc.d zookeeper defaults
+
+- name: Create data dir for zookeeper
+  file:
+    path: /data/zookeeper
+    state: directory
+    owner: "{{ansible_user}}"
+    group: "{{ansible_user}}"
+    mode: "0755"
+
+- name: Copy using inline content
+  copy:
+    content: "{{brokerId}}"
+    dest: /data/zookeeper/myid
+
+- name: Copy Zookeeper properties
+  copy:
+    src: ../files/zookeeper/zookeeper.properties
+    dest: /opt/kafka/config/zookeeper.properties
+    owner: "{{ansible_user}}"
+    group: "{{ansible_user}}"
+    mode: "0644"

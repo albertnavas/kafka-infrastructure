@@ -1,0 +1,27 @@
+- name: Format disk as xfs
+  filesystem:
+    fstype: xfs
+    dev: /dev/sdb
+
+- name: Create data dir for kafka
+  become: true
+  file:
+    path: /data/kafka
+    state: directory
+    owner: "{{ansible_user}}"
+    group: "{{ansible_user}}"
+    mode: "0755"
+
+- name: Mount volume
+  mount:
+    path: /data/kafka
+    boot: no
+    src: /dev/sdb
+    fstype: xfs
+    state: mounted
+
+- name: Set owner and group to /data/kafka
+  file:
+    path: /data/kafka
+    owner: "{{ansible_user}}"
+    group: "{{ansible_user}}"
